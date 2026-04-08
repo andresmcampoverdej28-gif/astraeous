@@ -1,60 +1,52 @@
 import { Tabs } from 'expo-router';
-import { Text, View } from 'react-native';
+import { FolderKanban, House, UserRoundCog, UsersRound } from 'lucide-react-native';
+import { type ComponentType } from 'react';
+import { View } from 'react-native';
 import { COLORS } from '../../constants/colors';
-import { FONTS } from '../../constants/typography';
+
+type LucideIcon = ComponentType<{
+  color?: string;
+  size?: number;
+  strokeWidth?: number;
+}>;
 
 interface TabIconProps {
-  symbol: string;
-  label: string;
+  icon: LucideIcon;
   focused: boolean;
+  color: string;
 }
 
-function TabIcon({ symbol, label, focused }: TabIconProps) {
+function TabIcon({ icon, focused, color }: TabIconProps) {
+  const Icon = icon;
+
   return (
-    <View className="items-center justify-center relative" style={{ gap: 2, paddingTop: 4 }}>
+    <View
+      className="items-center justify-center relative overflow-hidden rounded-2xl"
+      style={{
+        paddingHorizontal: 14,
+        paddingVertical: 6,
+        backgroundColor: focused ? COLORS.whiteAlpha10 : 'transparent',
+        borderWidth: focused ? 1 : 0,
+        borderColor: focused ? COLORS.yellowAlpha30 : 'transparent',
+      }}
+    >
       {focused && (
         <View
-          style={{
-            position: 'absolute',
-            top: -4,
-            width: 20,
-            height: 2,
-            backgroundColor: COLORS.yellowPale,
-            borderRadius: 1,
-            shadowColor: COLORS.yellowPale,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 1,
-            shadowRadius: 4,
-          }}
+          className="absolute -right-3 -top-3 h-8 w-8 rounded-full"
+          style={{ backgroundColor: COLORS.purpleAlpha15 }}
         />
       )}
-      <Text
-        style={[
-          { fontSize: 20, color: COLORS.whiteAlpha40 },
-          focused && {
-            color: COLORS.purpleStrong,
-            textShadowColor: COLORS.purpleStrong,
-            textShadowOffset: { width: 0, height: 0 },
-            textShadowRadius: 8,
-          },
-        ]}
-      >
-        {symbol}
-      </Text>
-      <Text
-        style={[
-          FONTS.caption,
-          { fontSize: 9, color: COLORS.whiteAlpha40 },
-          focused && {
-            color: COLORS.yellowPale,
-            textShadowColor: COLORS.yellowPale,
-            textShadowOffset: { width: 0, height: 0 },
-            textShadowRadius: 6,
-          },
-        ]}
-      >
-        {label}
-      </Text>
+      {focused && (
+        <View
+          className="absolute -left-3 -bottom-3 h-8 w-8 rounded-full"
+          style={{ backgroundColor: COLORS.yellowAlpha30 }}
+        />
+      )}
+      <Icon
+        color={color}
+        size={24}
+        strokeWidth={focused ? 2.5 : 2.1}
+      />
     </View>
   );
 }
@@ -68,45 +60,53 @@ export default function TabsLayout() {
           backgroundColor: COLORS.backgroundCard,
           borderTopWidth: 1,
           borderTopColor: COLORS.purpleAlpha30,
-          height: 64,
-          paddingBottom: 8,
-          paddingTop: 4,
-          elevation: 0,
+          height: 74,
+          paddingBottom: 12,
+          paddingTop: 10,
+          paddingHorizontal: 10,
+          elevation: 10,
+          shadowColor: COLORS.purpleStrong,
+          shadowOffset: { width: 0, height: -8 },
+          shadowOpacity: 0.18,
+          shadowRadius: 18,
         },
         tabBarShowLabel: false,
         tabBarActiveTintColor: COLORS.yellowPale,
         tabBarInactiveTintColor: COLORS.whiteAlpha40,
+        tabBarItemStyle: {
+          paddingHorizontal: 4,
+        },
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon symbol="⬡" label="INICIO" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon icon={House} focused={focused} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="projects"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon symbol="✦" label="PROYECTOS" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon icon={FolderKanban} focused={focused} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="team"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon symbol="◈" label="EQUIPO" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon icon={UsersRound} focused={focused} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon symbol="◎" label="PERFIL" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon icon={UserRoundCog} focused={focused} color={color} />
           ),
         }}
       />
