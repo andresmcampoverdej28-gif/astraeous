@@ -52,6 +52,12 @@
         "projectId": "449281e0-0162-4a97-a6d3-de7f60f5d5c2"
       }
     },
-    "owner": "vichigato"
+    "owner": "vichigato",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/449281e0-0162-4a97-a6d3-de7f60f5d5c2"
+    }
   }
 }

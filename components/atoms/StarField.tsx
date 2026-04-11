@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withSequence,
-  withTiming,
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withRepeat,
+    withSequence,
+    withTiming,
 } from 'react-native-reanimated';
 import { COLORS } from '../../constants/colors';
 
@@ -23,7 +23,7 @@ interface Star {
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-const StarParticle: React.FC<Star> = ({
+const StarParticle: React.FC<Star> = React.memo(({
   id,
   top,
   left,
@@ -37,7 +37,6 @@ const StarParticle: React.FC<Star> = ({
   const animatedOffsetY = useSharedValue(0);
 
   React.useEffect(() => {
-    // Animación de brillo más notoria
     animatedOpacity.value = withDelay(
       delay,
       withRepeat(
@@ -49,25 +48,23 @@ const StarParticle: React.FC<Star> = ({
       ),
     );
 
-    // Animación de movimiento en X más pronunciado
     animatedOffsetX.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(5, { duration: duration * 1.5, easing: Easing.inOut(Easing.ease) }),
-          withTiming(-5, { duration: duration * 1.5, easing: Easing.inOut(Easing.ease) }),
+          withTiming(3.5, { duration: duration * 1.5, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-3.5, { duration: duration * 1.5, easing: Easing.inOut(Easing.ease) }),
         ),
         -1,
       ),
     );
 
-    // Animación de movimiento en Y más pronunciado
     animatedOffsetY.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(3.5, { duration: duration * 2, easing: Easing.inOut(Easing.ease) }),
-          withTiming(-3.5, { duration: duration * 2, easing: Easing.inOut(Easing.ease) }),
+          withTiming(2.2, { duration: duration * 2, easing: Easing.inOut(Easing.ease) }),
+          withTiming(-2.2, { duration: duration * 2, easing: Easing.inOut(Easing.ease) }),
         ),
         -1,
       ),
@@ -98,19 +95,19 @@ const StarParticle: React.FC<Star> = ({
       ]}
     />
   );
-};
+});
 
 const StarField: React.FC = () => {
   // Generamos las estrellas una sola vez con useMemo
   const stars = useMemo<Star[]>(() =>
-    Array.from({ length: 60 }, (_, i) => ({
+    Array.from({ length: 42 }, (_, i) => ({
       id:       i,
       top:      `${Math.random() * 100}%` as `${number}%`,
       left:     `${Math.random() * 100}%` as `${number}%`,
-      size:     Math.random() < 0.2 ? 3 : Math.random() < 0.5 ? 2 : 1,
-      opacity:  0.5 + Math.random() * 0.5, // Brillo más notorio
-      duration: 1200 + Math.random() * 1500, // Duración más rápida
-      delay:    Math.random() * 1500, // Delay más rápido
+      size:     Math.random() < 0.15 ? 3 : Math.random() < 0.45 ? 2 : 1,
+      opacity:  0.45 + Math.random() * 0.45,
+      duration: 1400 + Math.random() * 1200,
+      delay:    Math.random() * 1200,
     })),
     [],
   );

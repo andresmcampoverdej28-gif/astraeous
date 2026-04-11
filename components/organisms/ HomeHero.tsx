@@ -62,6 +62,14 @@ const HomeHero: React.FC<HomeHeroProps> = ({
   onPressTeam,
 }) => (
   <View className="flex-1 items-center justify-center overflow-hidden" style={{ gap: 24, paddingHorizontal: 32, paddingVertical: 48 }}>
+    <GlowText
+      variant="subtitle"
+      color={COLORS.whiteAlpha40}
+      style={{ position: 'absolute', top: 12, left: 16, fontSize: 12, letterSpacing: 2 }}
+    >
+      V1.5.5
+    </GlowText>
+
     <StarField />
 
     {/* Orbe central */}
