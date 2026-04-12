@@ -113,7 +113,7 @@ function OrbScene() {
                 marginTop: o,
                 borderWidth: 0.8,
                 borderColor: c,
-                backgroundColor: 'transparent' as const,
+                backgroundColor: 'transparent',
               },
               line,
             ]}
