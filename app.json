@@ -15,9 +15,8 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/icon.png",
+        "monochromeImage": "./assets/images/icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -49,15 +48,14 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "449281e0-0162-4a97-a6d3-de7f60f5d5c2"
+        "projectId": "0c6959f5-db80-495f-940a-3a126fffcf63"
       }
     },
-    "owner": "vichigato",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/449281e0-0162-4a97-a6d3-de7f60f5d5c2"
+      "url": "https://u.expo.dev/0c6959f5-db80-495f-940a-3a126fffcf63"
     }
   }
 }

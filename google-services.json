@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1097173405903",
+    "project_id": "astraeous-b5b8d",
+    "storage_bucket": "astraeous-b5b8d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097173405903:android:388eeae0496d496608a7ba",
+        "android_client_info": {
+          "package_name": "com.anonymous.astraeous"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChSYiQKksc0RUY-MlH4kwivsLy352ky50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
