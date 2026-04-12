@@ -1,15 +1,16 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, ImageSourcePropType, View } from 'react-native';
+import { COLORS } from '../../constants/colors';
 import AstraBadge from '../atoms/AstraBadge';
 import AstraButton from '../atoms/AstraButton';
 import GlowText from '../atoms/GlowText';
 
 export interface Project {
-  id:            string;
-  title:         string;
-  status:        string;
-  description?:  string;
-  thumbnailUri?: string;
+  id:             string;
+  title:          string;
+  status:         string;
+  description?:   string;
+  thumbnailUri?:  ImageSourcePropType;
 }
 
 interface ProjectCardProps extends Omit<Project, 'id'> {
@@ -17,8 +18,8 @@ interface ProjectCardProps extends Omit<Project, 'id'> {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
-  title        = 'Project Name',
-  status       = 'IN DEV',
+  title       = 'Project Name',
+  status      = 'IN DEV',
   description,
   thumbnailUri,
   onPress,
@@ -29,16 +30,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     {/* Thumbnail */}
     <View className="bg-background-elevated" style={{ height: 140 }}>
       {thumbnailUri ? (
-        <Image source={{ uri: thumbnailUri }} className="h-full w-full" />
+        <Image
+          source={thumbnailUri}
+          style={{ width: '100%', height: '100%' }}
+          resizeMode="cover"
+        />
       ) : (
         <View className="flex-1 items-center justify-center bg-purple-alpha-15">
           <GlowText variant="display" className="text-purple-alpha-30" style={{ fontSize: 40 }}>✦</GlowText>
         </View>
       )}
+
+      {/* Degradado inferior */}
       <View
         className="absolute bottom-0 left-0 right-0 bg-background-card opacity-60"
         style={{ height: 50 }}
       />
+
+      {/* Badge de status */}
       <View className="absolute" style={{ right: 8, top: 8 }}>
         <AstraBadge label={status} variant="status" />
       </View>
