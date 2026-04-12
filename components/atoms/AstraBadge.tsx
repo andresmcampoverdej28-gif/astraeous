@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Text, View, ViewStyle } from 'react-native';
 import { FONTS } from '../../constants/typography';
 
 type BadgeVariant = 'role' | 'status' | 'tag';
@@ -21,10 +21,10 @@ const AstraBadge: React.FC<AstraBadgeProps> = ({
     tag:    'bg-white-alpha-10 border-white-alpha-40',
   };
 
-  const textStyles: Record<BadgeVariant, TextStyle> = {
-    role:   { color: '#7844E5' },
-    status: { color: '#FFEE8C' },
-    tag:    { color: 'rgba(255,255,255,0.8)' },
+  const textClassNames: Record<BadgeVariant, string> = {
+    role:   'text-purple-strong',
+    status: 'text-yellow-pale',
+    tag:    'text-white-alpha-80',
   };
 
   return (
@@ -32,7 +32,10 @@ const AstraBadge: React.FC<AstraBadgeProps> = ({
       className={`self-start rounded-[4px] border px-[8px] py-[3px] ${badgeClassNames[variant]}`}
       style={style}
     >
-      <Text style={[FONTS.caption, { fontSize: 10, fontWeight: '700' }, textStyles[variant]]}>
+      <Text
+        className={textClassNames[variant]}
+        style={[FONTS.caption, { fontSize: 10, fontWeight: '700' }]}
+      >
         {label}
       </Text>
     </View>

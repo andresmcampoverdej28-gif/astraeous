@@ -32,7 +32,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <Image source={{ uri: thumbnailUri }} className="h-full w-full" />
       ) : (
         <View className="flex-1 items-center justify-center bg-purple-alpha-15">
-          <GlowText variant="display" style={{ fontSize: 40, color: 'rgba(120,68,229,0.3)' }}>✦</GlowText>
+          <GlowText variant="display" className="text-purple-alpha-30" style={{ fontSize: 40 }}>✦</GlowText>
         </View>
       )}
       <View
@@ -51,7 +51,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       {description ? (
         <GlowText
           variant="body"
-          color="rgba(255,255,255,0.8)"
+          className="text-white-alpha-80"
           style={{ lineHeight: 20 }}
           numberOfLines={2}
         >

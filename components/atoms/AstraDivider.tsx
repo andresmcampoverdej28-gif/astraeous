@@ -39,7 +39,7 @@ const AstraDivider: React.FC<AstraDividerProps> = ({
   if (variant === 'dashed') {
     return (
       <View
-        className="my-4 h-0 border border-dashed border-purple-alpha-30 bg-transparent"
+        className="my-4 h-0 border border-dashed border-purple-alpha-30"
         style={style}
       />
     );
