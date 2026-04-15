@@ -105,7 +105,7 @@ export default function MemberDetailScreen() {
                   {member.name}
                 </GlowText>
                 <GlowText variant="caption" color={COLORS.whiteAlpha40}>
-                  {member.realName}
+                  {member.initials}
                 </GlowText>
               </View>
             </View>
@@ -114,7 +114,7 @@ export default function MemberDetailScreen() {
 
             {/* ── Bio ── */}
             <GlowText variant="caption" color={COLORS.purpleWeak}>
-              SOBRE EL MIEMBRO
+              SOBRE EL INTEGRANTE
             </GlowText>
             <GlowText variant="body" color={COLORS.whiteAlpha80} style={styles.bio}>
               {member.bio}
@@ -127,10 +127,11 @@ export default function MemberDetailScreen() {
               ¿QUIÉN ES?
             </GlowText>
             <MemberCard
-              name={member.name}
+              name={member.realName}
               role={member.role}
               initials={member.initials}
               isLead={member.isLead}
+              uri={member.uri_2}
               // uri vacío intencional — se pasará cuando haya foto real
             />
 
