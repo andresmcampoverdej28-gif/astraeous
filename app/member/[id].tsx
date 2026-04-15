@@ -9,12 +9,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS } from '../../constants/colors';
-import { getMemberById } from '../../constants/members';
 import AstraBadge from '../../components/atoms/AstraBadge';
 import AstraDivider from '../../components/atoms/AstraDivider';
 import GlowText from '../../components/atoms/GlowText';
 import MemberCard from '../../components/molecules/ MemberCard';
+import { COLORS } from '../../constants/colors';
+import { getMemberById } from '../../constants/members';
 
 export default function MemberDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -124,7 +124,7 @@ export default function MemberDetailScreen() {
 
             {/* ── Carta del miembro (sin foto real aún) ── */}
             <GlowText variant="caption" color={COLORS.purpleWeak}>
-              CARTA
+              ¿QUIÉN ES?
             </GlowText>
             <MemberCard
               name={member.name}
