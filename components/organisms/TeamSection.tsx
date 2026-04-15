@@ -28,7 +28,7 @@ const TeamSection: React.FC = () => {
                 initials={member.initials}
                 uri={member.uri}
                 isLead={member.isLead}
-                onPress={() => router.push(`./member/${member.id}`)}
+                onPress={() => router.push(`/member/${member.id}`)}
               />
             ))}
             <AstraDivider variant="dashed" />
@@ -42,7 +42,7 @@ const TeamSection: React.FC = () => {
             initials={member.initials}
             uri={member.uri}
             isLead={member.isLead}
-            onPress={() => router.push(`./member/${member.id}`)}
+            onPress={() => router.push(`/member/${member.id}`)}
           />
         ))}
       </ScrollView>
