@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Image,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -148,10 +147,7 @@ export default function GameDetailScreen() {
           )}
         </TouchableOpacity>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
+        <View style={styles.detailContent}>
           {/* ── Hero: imagen con Ken Burns ── */}
           <View style={styles.heroContainer}>
             <Animated.View
@@ -210,7 +206,7 @@ export default function GameDetailScreen() {
               ✦
             </GlowText>
           </Animated.View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </Animated.View>
   );
@@ -221,8 +217,8 @@ const styles = StyleSheet.create({
     flex:            1,
     backgroundColor: COLORS.background,
   },
-  scrollContent: {
-    paddingBottom: 64,
+  detailContent: {
+    flex: 1,
   },
   heroContainer: {
     height:   300,
