@@ -95,6 +95,8 @@ const StarParticle: React.FC<Star> = React.memo(({
   );
 });
 
+StarParticle.displayName = "StarParticle";
+
 const StarField: React.FC = () => {
   // Generamos las estrellas una sola vez con useMemo
   const stars = useMemo<Star[]>(() =>
