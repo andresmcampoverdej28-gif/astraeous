@@ -5,8 +5,8 @@ import { Pause, Play } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
-  Dimensions,
   Image,
+  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -19,9 +19,6 @@ import GlowText from '../../components/atoms/GlowText';
 import { COLORS } from '../../constants/colors';
 import { getGameById } from '../../constants/games';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const VIDEO_HEIGHT = (SCREEN_WIDTH - 48) * (9 / 16); // ratio 16:9
-
 // ── Canciones ─────────────────────────────────────────────────────────────────
 const GAME_SONGS: Record<string, any> = {
   'outcome-memories': require('../../assets/GameSongs/OM.wav'),
@@ -29,46 +26,48 @@ const GAME_SONGS: Record<string, any> = {
   'doors':            require('../../assets/GameSongs/DO.wav'),
 };
 
-// ── Componente de video individual ────────────────────────────────────────────
-const GameplayVideo: React.FC<{ source: any; index: number }> = ({ source, index }) => {
+// ── Video Hero con fundido ────────────────────────────────────────────────────
+const HeroVideo: React.FC<{ source: any; thumbnail: ImageSourcePropType }> = ({ source, thumbnail }) => {
   const player = useVideoPlayer(source, (p) => {
-    p.loop = false;
-    p.muted = false;
+    p.loop  = true;
+    p.muted = true;
+    p.play();
   });
 
+  const videoOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Animated.timing(videoOpacity, {
+        toValue:         1,
+        duration:        800,
+        useNativeDriver: true,
+      }).start();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <View style={videoStyles.wrapper}>
-      <GlowText variant="caption" color={COLORS.purpleWeak} style={videoStyles.label}>
-        GAMEPLAY {index + 1 > 1 ? `#${index + 1}` : ''}
-      </GlowText>
-      <VideoView
-        player={player}
-        style={videoStyles.video}
-        allowsFullscreen
-        allowsPictureInPicture
-        contentFit="contain"
+    <View style={StyleSheet.absoluteFill}>
+      <Image
+        source={thumbnail}
+        style={StyleSheet.absoluteFill}
+        resizeMode="cover"
       />
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: videoOpacity }]}>
+        <VideoView
+          player={player}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          allowsFullscreen={false}
+          allowsPictureInPicture={false}
+          nativeControls={false}
+        />
+      </Animated.View>
     </View>
   );
 };
-
-const videoStyles = StyleSheet.create({
-  wrapper: {
-    gap: 8,
-  },
-  label: {
-    letterSpacing: 1.5,
-  },
-  video: {
-    width:        '100%',
-    height:       VIDEO_HEIGHT,
-    borderRadius: 10,
-    backgroundColor: COLORS.backgroundElevated,
-    borderWidth:  1,
-    borderColor:  COLORS.purpleAlpha30,
-    overflow:     'hidden',
-  },
-});
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function GameDetailScreen() {
@@ -78,7 +77,6 @@ export default function GameDetailScreen() {
   const soundRef = useRef<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Animaciones
   const fadeAnim   = useRef(new Animated.Value(0)).current;
   const slideAnim  = useRef(new Animated.Value(30)).current;
   const imageScale = useRef(new Animated.Value(1.08)).current;
@@ -158,16 +156,9 @@ export default function GameDetailScreen() {
     <Animated.View style={[styles.screen, { opacity: fadeAnim }]}>
       <SafeAreaView style={styles.screen} edges={['top']}>
 
-        {/* Botones flotantes */}
+        {/* Botón flotante de volver — se queda */}
         <TouchableOpacity onPress={() => router.back()} style={styles.floatingBackBtn} activeOpacity={0.7}>
           <GlowText variant="caption" color={COLORS.white}>← VOLVER</GlowText>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={toggleAudio} style={styles.audioControlBtn} activeOpacity={0.75}>
-          {isPlaying
-            ? <Pause size={18} color={COLORS.white} strokeWidth={2.25} />
-            : <Play  size={18} color={COLORS.white} fill={COLORS.white} strokeWidth={1.5} />
-          }
         </TouchableOpacity>
 
         <ScrollView
@@ -175,18 +166,29 @@ export default function GameDetailScreen() {
           contentContainerStyle={styles.scrollContent}
         >
           {/* ── Hero ── */}
-          <View style={styles.heroContainer}>
-            <Animated.View style={[styles.heroImageWrapper, { transform: [{ scale: imageScale }] }]}>
-              <Image source={game.thumbnail} style={styles.heroImage} resizeMode="cover" />
-            </Animated.View>
+          <Animated.View style={[styles.heroContainer, { transform: [{ scale: imageScale }] }]}>
+            {game.videos.length > 0
+              ? <HeroVideo source={game.videos[0]} thumbnail={game.thumbnail} />
+              : <Image source={game.thumbnail} style={StyleSheet.absoluteFill} resizeMode="cover" />
+            }
             <View style={styles.heroOverlay} />
+
+            {/* Título + icono de audio al lado */}
             <View style={styles.heroTitleBlock}>
               <AstraBadge label={game.status} variant="status" />
-              <GlowText variant="display" glow style={styles.heroTitle}>
-                {game.title}
-              </GlowText>
+              <View style={styles.titleRow}>
+                <GlowText variant="display" glow style={[styles.heroTitle, styles.heroTitleFlex]}>
+                  {game.title}
+                </GlowText>
+                <TouchableOpacity onPress={toggleAudio} activeOpacity={0.7} style={styles.inlineAudioBtn}>
+                  {isPlaying
+                    ? <Pause size={22} color={COLORS.yellowPale} strokeWidth={2.25} />
+                    : <Play  size={22} color={COLORS.yellowPale} fill={COLORS.yellowPale} strokeWidth={1.5} />
+                  }
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </Animated.View>
 
           {/* ── Contenido ── */}
           <Animated.View
@@ -204,18 +206,6 @@ export default function GameDetailScreen() {
                 {paragraph}
               </GlowText>
             ))}
-
-            {/* ── Videos de gameplay ── */}
-            {game.videos.length > 0 && (
-              <>
-                <AstraDivider variant="glow" />
-                <GlowText variant="caption" color={COLORS.purpleWeak}>GAMEPLAY</GlowText>
-
-                {game.videos.map((src, i) => (
-                  <GameplayVideo key={i} source={src} index={i} />
-                ))}
-              </>
-            )}
 
             <AstraDivider variant="line" />
 
@@ -248,36 +238,10 @@ const styles = StyleSheet.create({
     borderWidth:       1,
     borderColor:       COLORS.purpleAlpha30,
   },
-  audioControlBtn: {
-    position:       'absolute',
-    top:            12,
-    right:          20,
-    zIndex:         30,
-    backgroundColor: COLORS.purpleMid,
-    width:          52,
-    height:         52,
-    borderRadius:   26,
-    borderWidth:    1,
-    borderColor:    COLORS.purpleAlpha30,
-    alignItems:     'center',
-    justifyContent: 'center',
-    shadowColor:    COLORS.purpleStrong,
-    shadowOffset:   { width: 0, height: 4 },
-    shadowOpacity:  0.28,
-    shadowRadius:   10,
-    elevation:      6,
-  },
   heroContainer: {
     height:   300,
     position: 'relative',
     overflow: 'hidden',
-  },
-  heroImageWrapper: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  heroImage: {
-    width:  '100%',
-    height: '100%',
   },
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -302,9 +266,20 @@ const styles = StyleSheet.create({
     right:    20,
     gap:      8,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems:    'center',
+    gap:           10,
+  },
+  heroTitleFlex: {
+    flex: 1,
+  },
   heroTitle: {
     fontSize:   28,
     lineHeight: 34,
+  },
+  inlineAudioBtn: {
+    paddingBottom: 2, // alineación visual con el texto
   },
   contentBlock: {
     paddingHorizontal: 24,
