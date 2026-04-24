@@ -50,14 +50,11 @@ const HeroVideo: React.FC<{ source: any; thumbnail: ImageSourcePropType }> = ({ 
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      {/* Foto de fondo */}
       <Image
         source={thumbnail}
         style={StyleSheet.absoluteFill}
         resizeMode="cover"
       />
-
-      {/* Video encima con fundido */}
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: videoOpacity }]}>
         <VideoView
           player={player}
@@ -159,16 +156,9 @@ export default function GameDetailScreen() {
     <Animated.View style={[styles.screen, { opacity: fadeAnim }]}>
       <SafeAreaView style={styles.screen} edges={['top']}>
 
-        {/* Botones flotantes */}
+        {/* Botón flotante de volver — se queda */}
         <TouchableOpacity onPress={() => router.back()} style={styles.floatingBackBtn} activeOpacity={0.7}>
           <GlowText variant="caption" color={COLORS.white}>← VOLVER</GlowText>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={toggleAudio} style={styles.audioControlBtn} activeOpacity={0.75}>
-          {isPlaying
-            ? <Pause size={18} color={COLORS.white} strokeWidth={2.25} />
-            : <Play  size={18} color={COLORS.white} fill={COLORS.white} strokeWidth={1.5} />
-          }
         </TouchableOpacity>
 
         <ScrollView
@@ -182,11 +172,21 @@ export default function GameDetailScreen() {
               : <Image source={game.thumbnail} style={StyleSheet.absoluteFill} resizeMode="cover" />
             }
             <View style={styles.heroOverlay} />
+
+            {/* Título + icono de audio al lado */}
             <View style={styles.heroTitleBlock}>
               <AstraBadge label={game.status} variant="status" />
-              <GlowText variant="display" glow style={styles.heroTitle}>
-                {game.title}
-              </GlowText>
+              <View style={styles.titleRow}>
+                <GlowText variant="display" glow style={[styles.heroTitle, styles.heroTitleFlex]}>
+                  {game.title}
+                </GlowText>
+                <TouchableOpacity onPress={toggleAudio} activeOpacity={0.7} style={styles.inlineAudioBtn}>
+                  {isPlaying
+                    ? <Pause size={22} color={COLORS.yellowPale} strokeWidth={2.25} />
+                    : <Play  size={22} color={COLORS.yellowPale} fill={COLORS.yellowPale} strokeWidth={1.5} />
+                  }
+                </TouchableOpacity>
+              </View>
             </View>
           </Animated.View>
 
@@ -238,25 +238,6 @@ const styles = StyleSheet.create({
     borderWidth:       1,
     borderColor:       COLORS.purpleAlpha30,
   },
-  audioControlBtn: {
-    position:        'absolute',
-    top:             12,
-    right:           20,
-    zIndex:          30,
-    backgroundColor: COLORS.purpleMid,
-    width:           52,
-    height:          52,
-    borderRadius:    26,
-    borderWidth:     1,
-    borderColor:     COLORS.purpleAlpha30,
-    alignItems:      'center',
-    justifyContent:  'center',
-    shadowColor:     COLORS.purpleStrong,
-    shadowOffset:    { width: 0, height: 4 },
-    shadowOpacity:   0.28,
-    shadowRadius:    10,
-    elevation:       6,
-  },
   heroContainer: {
     height:   300,
     position: 'relative',
@@ -285,9 +266,20 @@ const styles = StyleSheet.create({
     right:    20,
     gap:      8,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems:    'center',
+    gap:           10,
+  },
+  heroTitleFlex: {
+    flex: 1,
+  },
   heroTitle: {
     fontSize:   28,
     lineHeight: 34,
+  },
+  inlineAudioBtn: {
+    paddingBottom: 2, // alineación visual con el texto
   },
   contentBlock: {
     paddingHorizontal: 24,
