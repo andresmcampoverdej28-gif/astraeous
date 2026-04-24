@@ -82,18 +82,25 @@ export default function ProfileGate() {
   }
 
   const data = mapDbToProfileData(profileData ?? {});
-  const isGuest = !session;
+
+  const handleEditProfile = React.useCallback(() => {
+    router.push('/edit-profile');
+  }, [router]);
+
+  const handleSignOut = React.useCallback(() => {
+    router.replace('/login');
+    setTimeout(() => {
+      setSession(null);
+    }, 0);
+  }, [router, setSession]);
 
   return (
     <View className="flex-1">
       <SessionDebugBanner />
       <ProfileSection
         data={data}
-        onEditProfile={isGuest ? undefined : () => router.push('/edit-profile')}
-        onSignOut={isGuest ? undefined : () => {
-          setSession(null);
-          router.replace('/login');
-        }}
+        onEditProfile={handleEditProfile}
+        onSignOut={handleSignOut}
       />
     </View>
   );
