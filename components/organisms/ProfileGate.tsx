@@ -17,6 +17,18 @@ function buildFallbackProfile(session: { email?: string | null; status?: 'activo
   };
 }
 
+function buildGuestProfile() {
+  return {
+    username: 'Visitante',
+    role: 'INVITADO',
+    status: 'ACTIVO' as const,
+    rank: 'INVITADO' as const,
+    projects: null,
+    commits: null,
+    avatar_url: null,
+  };
+}
+
 export default function ProfileGate() {
   const router = useRouter();
   const { session, setSession, loading } = useMemberSession();
@@ -26,7 +38,7 @@ export default function ProfileGate() {
   React.useEffect(() => {
     if (loading) return;
     if (!session) {
-      router.replace('/login');
+      setProfileData(buildGuestProfile());
       return;
     }
 
@@ -70,13 +82,15 @@ export default function ProfileGate() {
   }
 
   const data = mapDbToProfileData(profileData ?? {});
+  const isGuest = !session;
 
   return (
     <View className="flex-1">
       <SessionDebugBanner />
       <ProfileSection
         data={data}
-        onSignOut={() => {
+        onEditProfile={isGuest ? undefined : () => router.push('/edit-profile')}
+        onSignOut={isGuest ? undefined : () => {
           setSession(null);
           router.replace('/login');
         }}

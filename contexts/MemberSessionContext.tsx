@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
+import { refreshStoredMemberSession } from '../lib/memberAuth';
 
 export type MemberSession = {
   memberId: string;
@@ -27,7 +28,25 @@ export function MemberSessionProvider({ children }: { children: React.ReactNode 
     (async () => {
       try {
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        if (raw) setSessionState(JSON.parse(raw));
+        if (!raw) return;
+
+        const parsed = JSON.parse(raw) as MemberSession;
+        const refreshed = await refreshStoredMemberSession(parsed);
+
+        if (refreshed) {
+          setSessionState(refreshed);
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(refreshed));
+        } else {
+          await AsyncStorage.removeItem(STORAGE_KEY);
+        }
+      } catch (error) {
+        console.warn('Error validando la sesión de miembro:', error);
+        try {
+          const raw = await AsyncStorage.getItem(STORAGE_KEY);
+          if (raw) setSessionState(JSON.parse(raw));
+        } catch {
+          await AsyncStorage.removeItem(STORAGE_KEY);
+        }
       } finally {
         setLoading(false);
       }
