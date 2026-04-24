@@ -5,7 +5,8 @@ import { Pause, Play } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
-  Dimensions,
+  Image,
+  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -18,8 +19,6 @@ import GlowText from '../../components/atoms/GlowText';
 import { COLORS } from '../../constants/colors';
 import { getGameById } from '../../constants/games';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
 // ── Canciones ─────────────────────────────────────────────────────────────────
 const GAME_SONGS: Record<string, any> = {
   'outcome-memories': require('../../assets/GameSongs/OM.wav'),
@@ -27,23 +26,49 @@ const GAME_SONGS: Record<string, any> = {
   'doors':            require('../../assets/GameSongs/DO.wav'),
 };
 
-// ── Video Hero ────────────────────────────────────────────────────────────────
-const HeroVideo: React.FC<{ source: any }> = ({ source }) => {
+// ── Video Hero con fundido ────────────────────────────────────────────────────
+const HeroVideo: React.FC<{ source: any; thumbnail: ImageSourcePropType }> = ({ source, thumbnail }) => {
   const player = useVideoPlayer(source, (p) => {
-    p.loop    = true;
-    p.muted   = true;
+    p.loop  = true;
+    p.muted = true;
     p.play();
   });
 
+  const videoOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      Animated.timing(videoOpacity, {
+        toValue:         1,
+        duration:        800,
+        useNativeDriver: true,
+      }).start();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <VideoView
-      player={player}
-      style={StyleSheet.absoluteFill}
-      contentFit="cover"
-      allowsFullscreen={false}
-      allowsPictureInPicture={false}
-      nativeControls={false}
-    />
+    <View style={StyleSheet.absoluteFill}>
+      {/* Foto de fondo */}
+      <Image
+        source={thumbnail}
+        style={StyleSheet.absoluteFill}
+        resizeMode="cover"
+      />
+
+      {/* Video encima con fundido */}
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: videoOpacity }]}>
+        <VideoView
+          player={player}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          allowsFullscreen={false}
+          allowsPictureInPicture={false}
+          nativeControls={false}
+        />
+      </Animated.View>
+    </View>
   );
 };
 
@@ -55,7 +80,6 @@ export default function GameDetailScreen() {
   const soundRef = useRef<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Animaciones
   const fadeAnim   = useRef(new Animated.Value(0)).current;
   const slideAnim  = useRef(new Animated.Value(30)).current;
   const imageScale = useRef(new Animated.Value(1.08)).current;
@@ -153,7 +177,10 @@ export default function GameDetailScreen() {
         >
           {/* ── Hero ── */}
           <Animated.View style={[styles.heroContainer, { transform: [{ scale: imageScale }] }]}>
-            {game.videos.length > 0 && <HeroVideo source={game.videos[0]} />}
+            {game.videos.length > 0
+              ? <HeroVideo source={game.videos[0]} thumbnail={game.thumbnail} />
+              : <Image source={game.thumbnail} style={StyleSheet.absoluteFill} resizeMode="cover" />
+            }
             <View style={styles.heroOverlay} />
             <View style={styles.heroTitleBlock}>
               <AstraBadge label={game.status} variant="status" />
